@@ -1,4 +1,7 @@
+import UserButton from '@/app/components/UserButton';
 import type { Metadata } from "next";
+import React from 'react';
+import { SessionProvider } from './components/SessionProvider';
 import localFont from "next/font/local";
 import "./globals.css";
 import Link from 'next/link';
@@ -19,30 +22,30 @@ export const metadata: Metadata = {
   description: "ChatGPT brought to you by NextJS",
 };
 
-export default function RootLayout({
-                                     children,
-                                   }: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-    <body
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
-    <header className="text-white font-bold bg-green-900 text-2xl">
-      <div className="flex flex-grow">
-        <Link href="/">GPT Chat</Link>
-        <Link href="/about"
-              className="ml-5 font-light">About</Link>
+    <SessionProvider>
+      <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+      <header className="text-white font-bold bg-green-900 text-2xl flex py-3 px-5">
+        <div className="flex flex-grow">
+          <Link href="/">GPT Chat</Link>
+          <Link href="/about"
+                className="ml-5 font-light">About</Link>
+        </div>
+        <div>
+          <UserButton/>
+        </div>
+      </header>
+      <div className="flex flex-col md:flex-row">
+        <div className="flex-grow">
+          {children}
+        </div>
       </div>
-      <div></div>
-    </header>
-    <div className="flex flex-col md:flex-row">
-      <div className="flex-grow">
-        {children}
-      </div>
-    </div>
-    </body>
-    </html>
+      </body>
+      </html>
+    </SessionProvider>
   );
 }
