@@ -3,7 +3,7 @@
 import { getCompletion } from '@/app/server-actions/getCompletion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 interface Message {
   role: "user" | "assistant";
@@ -13,9 +13,10 @@ interface Message {
 export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState("");
+  const chatId = useRef<number | null>(null)
 
   const onClick = async () => {
-    const completions = await getCompletion([
+    const completions = await getCompletion(chatId.current,[
       ...messages,
       {
         role: "user",
