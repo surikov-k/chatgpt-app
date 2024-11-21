@@ -29,7 +29,7 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <header className="text-white font-bold bg-blue-700 text-2xl flex py-3 px-5">
+      <header className="text-white font-bold bg-blue-700 text-2xl flex py-3 px-5 rounded">
         <div className="flex flex-grow">
           <Link href="/">GPT Chat</Link>
           <Link href="/about"
