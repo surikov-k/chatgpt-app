@@ -1,6 +1,6 @@
 import Chat from '@/app/components/Chat';
 import { getChat } from '@/db';
-import { getServerSession } from 'next-auth';
+import { auth as getServerSession } from "@/auth";
 import { notFound, redirect } from 'next/navigation';
 export const dynamic = "force-dynamic";
 

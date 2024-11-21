@@ -22,7 +22,13 @@ export const metadata: Metadata = {
   description: "ChatGPT brought to you by NextJS",
 };
 
-export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+  chats
+}: Readonly<{
+  children: React.ReactNode,
+  chats: React.ReactNode
+}>) {
   return (
     <SessionProvider>
       <html lang="en">
@@ -40,6 +46,7 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
         </div>
       </header>
       <div className="flex flex-col md:flex-row">
+          {chats}
         <div className="flex-grow">
           {children}
         </div>

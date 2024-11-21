@@ -1,12 +1,16 @@
-import Transcript from '@/app/components/Transcript';
-import { Separator } from '@/components/ui/separator';
-import { getServerSession } from "next-auth";
+import { auth as getServerSession } from "@/auth";
+import Link from "next/link";
+
+import { Separator } from "@/components/ui/separator";
+
 import { getChatsWithMessages } from "@/db";
-import Link from 'next/link';
+
+import Transcript from "./Transcript";
 
 export default async function PreviousChats() {
   const session = await getServerSession();
   const chats = await getChatsWithMessages(session?.user?.email || "");
+
   return (
     <div>
       {chats.length > 0 && (
@@ -14,8 +18,7 @@ export default async function PreviousChats() {
           <div className="text-2xl font-bold">Previous Chat Sessions</div>
           <div className="grid grid-cols-1 md:grid-cols-2">
             {chats.map((chat) => (
-              <div key={chat.id}
-                   className="m-1 border-2 rounded-xl">
+              <div key={chat.id} className="m-1 border-2 rounded-xl">
                 <Link
                   href={`/chats/${chat.id}`}
                   className="text-lg line-clamp-1 px-5 py-2 text-white bg-blue-900 rounded-t-lg"
@@ -23,12 +26,12 @@ export default async function PreviousChats() {
                   {chat.name}
                 </Link>
                 <div className="p-3">
-                  <Transcript messages={chat.messages.slice(0, 2)}/>
+                  <Transcript messages={chat.messages.slice(0, 2)} />
                 </div>
               </div>
             ))}
           </div>
-          <Separator className="mt-5"/>
+          <Separator className="mt-5" />
         </>
       )}
 

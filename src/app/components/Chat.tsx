@@ -1,75 +1,66 @@
 "use client";
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 
-import Transcript from '@/app/components/Transcript';
-import { useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import type { Message as AIMessage } from "ai";
+import { useChat } from "ai/react";
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { getCompletion } from '@/app/server-actions/getCompletion';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+import { updateChat } from "@/app/server-actions/updateChat";
+
+import Transcript from "./Transcript";
+
+import { Message } from "@/types";
 
 export default function Chat({
-    id = null,
-    messages: initialMessages = [],
-  }: {
-    id?: number | null;
-    messages?: Message[];
-  }
-) {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
-  const [message, setMessage] = useState("");
-  const chatId = useRef<number | null>(id)
+  id = null,
+  messages: initialMessages = [],
+}: {
+  id?: number | null;
+  messages?: Message[];
+}) {
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+    useChat({
+      initialMessages: initialMessages as unknown as AIMessage[],
+    });
+  const chatId = useRef<number | null>(id);
 
   const router = useRouter();
-
-  const onClick = async () => {
-    const completions = await getCompletion(chatId.current, [
-      ...messages,
-      {
-        role: "user",
-        content: message,
+  useEffect(() => {
+    (async () => {
+      if (!isLoading && messages.length) {
+        const simplifiedMessages = messages.map((message) => ({
+          role: message.role as "user" | "assistant",
+          content: message.content,
+        }));
+        const newChatId = await updateChat(chatId.current, simplifiedMessages);
+        if (chatId.current === null) {
+          router.push(`/chats/${newChatId}`);
+          router.refresh();
+        } else {
+          chatId.current = newChatId;
+        }
       }
-    ]);
-
-    if (!chatId.current) {
-      router.push(`/chats/${completions.id}`)
-      router.refresh();
-    }
-    chatId.current = completions.id
-
-    setMessage("");
-    setMessages(completions.messages);
-  }
+    })();
+  }, [isLoading, messages, router]);
 
   return (
     <div className="flex flex-col">
-
-      <Transcript messages={messages}
-                  truncate={false}/>
-
-      <div className="flex pt-3 my-3">
+      <Transcript messages={messages as Message[]} truncate={false} />
+      <form className="flex mt-3" onSubmit={handleSubmit}>
         <Input
           className="flex-grow text-xl"
           placeholder="Question"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              onClick();
-            }
-          }}
+          value={input}
+          onChange={handleInputChange}
+          autoFocus
         />
-        <Button onClick={onClick}
-                className="ml-3 text-xl">
+        <Button type="submit" className="ml-3 text-xl">
           Send
         </Button>
-      </div>
-
+      </form>
     </div>
-  )
+  );
 }

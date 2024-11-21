@@ -1,6 +1,7 @@
 "use server";
 import { createChat, updateChat } from '@/db';
-import { getServerSession } from 'next-auth';
+import { auth as getServerSession } from "@/auth";
+
 import OpenAI from "openai";
 
 const openai = new OpenAI({
