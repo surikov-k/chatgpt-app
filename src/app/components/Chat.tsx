@@ -1,10 +1,12 @@
 "use client";
 
-import { getCompletion } from '@/app/server-actions/getCompletion';
+import Transcript from '@/app/components/Transcript';
+import { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { getCompletion } from '@/app/server-actions/getCompletion';
 
 interface Message {
   role: "user" | "assistant";
@@ -26,7 +28,7 @@ export default function Chat({
   const router = useRouter();
 
   const onClick = async () => {
-    const completions = await getCompletion(chatId.current,[
+    const completions = await getCompletion(chatId.current, [
       ...messages,
       {
         role: "user",
@@ -46,22 +48,9 @@ export default function Chat({
 
   return (
     <div className="flex flex-col">
-      {messages.map((message, i) => (
-        <div
-          key={i}
-          className={`mb-5 flex flex-col ${
-            message.role === "user" ? "items-end" : "items-start"
-          }`}
-        >
-          <div
-            className={`${
-              message.role === "user" ? "bg-blue-500" : "bg-gray-500 text-black"
-            } rounded-md py-2 px-8`}
-          >
-            {message.content}
-          </div>
-        </div>
-      ))}
+
+      <Transcript messages={messages}
+                  truncate={false}/>
 
       <div className="flex pt-3 my-3">
         <Input
