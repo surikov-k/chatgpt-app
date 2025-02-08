@@ -4,9 +4,11 @@ import GitHubProvider from "next-auth/providers/github";
 
 const authOptions: NextAuthConfig = {
   callbacks: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async signIn({ profile }) {
       // Change this to your username
-      return profile?.login === "surikov-k";
+      // return profile?.login === "surikov-k";
+      return true;
     },
   },
   providers: [
