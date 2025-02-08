@@ -1,1 +1,2 @@
-[NextJS ChatGPT App](https://chatgpt-app-one-eosin.vercel.app/)
+## NextJS ChatGPT App
+Это приложение представляет собой чат, интегрированный с моделью ChatGPT от OpenAI.  Для использования чата требуется авторизация через GitHub.
